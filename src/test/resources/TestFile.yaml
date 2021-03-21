@@ -1,0 +1,6 @@
+name: TestClass
+properties:
+  integerType:
+    type: number
+  stringType:
+    type: string
