@@ -1,0 +1,6 @@
+name: TestRefFile
+properties:
+  field1:
+    type: string
+  field2:
+    type: number

@@ -1,6 +1,9 @@
-name: TestClass
+name: TestFile
 properties:
   integerType:
     type: number
   stringType:
     type: string
+  objectType:
+    type: object
+    ref: TestRefFile.yaml
