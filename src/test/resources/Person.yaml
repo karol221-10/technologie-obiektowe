@@ -1,0 +1,8 @@
+name: Person
+properties:
+  name:
+    type: string
+  surname:
+    type: string
+  age:
+    type: number
