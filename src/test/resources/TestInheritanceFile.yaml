@@ -1,0 +1,6 @@
+name: TestInheritanceFile
+allOf:
+  $ref: TestRefFile.yaml
+  properties:
+    intProperty:
+      type: number

@@ -10,6 +10,8 @@ public class PropertyParserFactory {
                 return new NameYamlParser();
             case "properties":
                 return new PropertiesYamlParser();
+            case "allOf":
+                return new AllOfPropertiesYamlParser();
             default:
                 throw new FileParseException();
         }

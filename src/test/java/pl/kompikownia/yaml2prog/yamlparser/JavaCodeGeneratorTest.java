@@ -18,19 +18,25 @@ public class JavaCodeGeneratorTest {
     @Test
     public void shouldGenerateCorrectJavaFile() throws IOException {
         // given
-        val classDefinition = ClassDefinition.builder()
-                .name("Person")
-                .field(FieldDefinition.of("name", FieldType.STRING, null))
-                .field(FieldDefinition.of("surname", FieldType.STRING, null))
-                .field(FieldDefinition.of("age", FieldType.NUMBER, null))
-                .build();
         val codeGenerator = new JavaCodeGenerator();
         codeGenerator.setMainPackageName("pl.kompikownia.yaml2prog.dto");
         // when
-        val result = codeGenerator.generateFile(classDefinition);
+        val result = codeGenerator.generateFile(buildPersonClassDefinition());
 
         // then
        assertThat(result).isEqualTo(readFile("Person.java"));
+    }
+
+    @Test
+    public void shouldGenerateCorrectJavaFileWithInheritance() throws IOException {
+        // given
+        val codeGenerator = new JavaCodeGenerator();
+        codeGenerator.setMainPackageName("pl.kompikownia.yaml2prog.dto");
+        // when
+        val result = codeGenerator.generateFile(buildStudentClassDefinition());
+
+        // then
+        assertThat(result).isEqualTo(readFile("Student.java"));
     }
 
     private String readFile(String filename) throws IOException {
@@ -40,5 +46,23 @@ public class JavaCodeGeneratorTest {
         fis.read(data);
         fis.close();
         return new String(data, StandardCharsets.UTF_8);
+    }
+
+    private ClassDefinition buildPersonClassDefinition() {
+        return ClassDefinition.builder()
+                .name("Person")
+                .field(FieldDefinition.of("name", FieldType.STRING, null))
+                .field(FieldDefinition.of("surname", FieldType.STRING, null))
+                .field(FieldDefinition.of("age", FieldType.NUMBER, null))
+                .build();
+    }
+
+    private ClassDefinition buildStudentClassDefinition() {
+        return ClassDefinition.builder()
+                .name("Student")
+                .parentClass(buildPersonClassDefinition())
+                .field(FieldDefinition.of("studentIdNumber", FieldType.STRING, null))
+                .field(FieldDefinition.of("yearOfStudy", FieldType.NUMBER, null))
+                .build();
     }
 }

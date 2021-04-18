@@ -25,6 +25,7 @@ public class YamlParser implements Parser {
     @Override
     public ClassDefinition parseFile(String filename) throws IOException {
         val classDefinitionBuilder = ClassDefinition.builder();
+        classDefinitionBuilder.path(getPathWithoutFilename(filename));
         val lines = readAllFileLinesToList(filename);
         int linePointer = 0;
         val propertyParserFactory = new PropertyParserFactory();
@@ -42,7 +43,7 @@ public class YamlParser implements Parser {
                 throw new FileParseException();
             }
             val propertyParser = propertyParserFactory.getPropertyParserFactory(propertyName);
-            List<String> nested = readAllNestedFields(lines, linePointer);
+            List<String> nested = StringUtils.readAllNestedFields(lines, linePointer);
             linePointer += nested.size();
             if(nested.isEmpty()) {
                 streamTokenizer.nextToken();
@@ -53,19 +54,13 @@ public class YamlParser implements Parser {
         return classDefinitionBuilder.build();
     }
 
-    private List<String> readAllNestedFields(List<String> lines, int linePointer) {
-        List<String> fileLines = new ArrayList<>();
-        boolean endOfWork = false;
-        while(!endOfWork) {
-            val line = lines.get(linePointer++);
-            val indent = StringUtils.countIndent(line);
-            if(indent > 0) {
-                fileLines.add(line);
-            }
-            if(lines.size() == linePointer || indent == 0) {
-                endOfWork = true;
-            }
+
+    private String getPathWithoutFilename(String fullPath) {
+        val splittedPath = fullPath.split("/");
+        StringBuilder pathAfterDivide = new StringBuilder();
+        for(int i = 0;i < splittedPath.length - 1; i++) {
+            pathAfterDivide.append(splittedPath[i]).append("/");
         }
-        return fileLines;
+        return pathAfterDivide.toString();
     }
 }

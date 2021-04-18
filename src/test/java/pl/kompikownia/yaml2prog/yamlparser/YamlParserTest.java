@@ -28,4 +28,16 @@ public class YamlParserTest {
         assertThat(result.getFields()).contains(FieldDefinition.of("stringType", FieldType.STRING, null));
         assertThat(result.getFields()).contains(FieldDefinition.of("objectType", FieldType.OBJECT, "TestRefFile.yaml"));
     }
+
+    @Test
+    public void shouldProperlyParseInheritanceFile() throws IOException {
+        // given
+        val yamlParser = new YamlParser();
+
+        // when
+        val result = yamlParser.parseFile("src/test/resources/TestInheritanceFile.yaml");
+        // then
+
+        assertThat(result.getParentClass()).isNotNull();
+    }
 }

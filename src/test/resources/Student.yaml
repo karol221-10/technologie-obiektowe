@@ -1,0 +1,8 @@
+name: Student
+allOf:
+  $ref: Person.yaml
+  properties:
+    studentIdNumber:
+      type: string
+    yearOfStudy:
+      type: number
