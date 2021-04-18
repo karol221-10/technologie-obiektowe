@@ -26,10 +26,12 @@ public class JavaCodeGenerator implements CodeGenerator {
         generateImports(stringBuilder, classDefinition.getParentClass(), classDefinition.getFields());
         generateClassAnnotations(stringBuilder, classDefinition.getParentClass() != null);
         generateClassDefinition(stringBuilder, classDefinition);
-        generateConstructorsWithBuilderAnnotation(stringBuilder, classDefinition.getName(),
-                Optional.ofNullable(classDefinition.getParentClass())
-                        .orElse(ClassDefinition.builder().build()).getFields(),
-                classDefinition.getFields());
+        if(classDefinition.getParentClass() != null) {
+            generateConstructorsWithBuilderAnnotation(stringBuilder, classDefinition.getName(),
+                    Optional.ofNullable(classDefinition.getParentClass())
+                            .orElse(ClassDefinition.builder().build()).getFields(),
+                    classDefinition.getFields());
+        }
         generateClassMembers(stringBuilder, classDefinition);
         return stringBuilder.toString();
     }
