@@ -1,16 +1,14 @@
 package pl.kompikownia.yaml2prog.definition;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
+import lombok.*;
 
 @Getter
 @AllArgsConstructor(staticName = "of")
 @Builder
+@ToString
 @EqualsAndHashCode
 public class FieldDefinition {
     private String fieldName;
     private FieldType type;
-    private String refName;
+    private ClassDefinition refClass;
 }

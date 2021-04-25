@@ -47,6 +47,7 @@ public class JavaCodeGenerator implements CodeGenerator {
 
     private void generateClassAnnotations(StringBuilder str, boolean hasParentClass) {
         str.append("@Getter\r\n");
+        str.append("@Setter\r\n");
         if (!hasParentClass) {
             str.append("@Builder\r\n");
         }
@@ -79,7 +80,7 @@ public class JavaCodeGenerator implements CodeGenerator {
             case STRING:
                 return "String";
             case OBJECT:
-                return fieldDefinition.getRefName();
+                return fieldDefinition.getRefClass().getName();
             default:
                 throw new IllegalArgumentException("Cannot recognize field type " + fieldDefinition.getType());
         }
@@ -88,7 +89,7 @@ public class JavaCodeGenerator implements CodeGenerator {
     private void generateImports(StringBuilder str, ClassDefinition parentClass, List<FieldDefinition> fields) {
         fields.stream()
                 .filter(fieldDefinition -> fieldDefinition.getType().equals(FieldType.OBJECT))
-                .map(FieldDefinition::getRefName)
+                .map(fieldDefinition -> fieldDefinition.getRefClass().getName())
                 .distinct()
                 .forEach(refName -> {
                     str.append("import ").append(mainPackageName).append(".").append(refName).append(";\r\n");
@@ -96,6 +97,7 @@ public class JavaCodeGenerator implements CodeGenerator {
         if(parentClass != null) {
             str.append("import ").append(mainPackageName).append(".").append(parentClass.getName()).append(";\r\n");
         }
+        str.append("import lombok.Setter;\r\n");
         str.append("import lombok.Getter;\r\n");
         str.append("import lombok.Builder;\r\n");
         str.append("\r\n");

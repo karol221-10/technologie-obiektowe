@@ -2,6 +2,7 @@ package pl.kompikownia.yaml2prog.yamlparser;
 
 import lombok.val;
 import org.junit.jupiter.api.Test;
+import pl.kompikownia.yaml2prog.definition.ClassDefinition;
 import pl.kompikownia.yaml2prog.definition.FieldDefinition;
 import pl.kompikownia.yaml2prog.definition.FieldType;
 import pl.kompikownia.yaml2prog.parser.YamlParser;
@@ -26,7 +27,13 @@ public class YamlParserTest {
         assertThat(result.getFields().size()).isEqualTo(3);
         assertThat(result.getFields()).contains(FieldDefinition.of("integerType", FieldType.NUMBER, null));
         assertThat(result.getFields()).contains(FieldDefinition.of("stringType", FieldType.STRING, null));
-        assertThat(result.getFields()).contains(FieldDefinition.of("objectType", FieldType.OBJECT, "TestRefFile.yaml"));
+        assertThat(result.getFields()).contains(FieldDefinition.of("objectType", FieldType.OBJECT,
+                ClassDefinition.builder()
+                .name("TestRefFile")
+                .path("src/test/resources/")
+                .field(FieldDefinition.of("field1", FieldType.STRING, null))
+                .field(FieldDefinition.of("field2", FieldType.NUMBER, null))
+                .build()));
     }
 
     @Test

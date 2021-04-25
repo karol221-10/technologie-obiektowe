@@ -5,6 +5,8 @@ import pl.kompikownia.yaml2prog.definition.ClassDefinition;
 import pl.kompikownia.yaml2prog.definition.FieldDefinition;
 import pl.kompikownia.yaml2prog.definition.FieldType;
 import pl.kompikownia.yaml2prog.exception.FileParseException;
+import pl.kompikownia.yaml2prog.factory.ParserFactory;
+import pl.kompikownia.yaml2prog.lang.FileFormat;
 import pl.kompikownia.yaml2prog.parser.StringUtils;
 
 import java.io.IOException;
@@ -17,13 +19,14 @@ public class PropertiesYamlParser implements PropertyParser {
     @Override
     public void parseProperty(ClassDefinition.ClassDefinitionBuilder classDefinitionBuilder, List<String> nested) throws IOException {
         val properties = getObjectPropertiesWithDescription(nested);
+        val homePath = classDefinitionBuilder.build().getPath();
         for (val property: properties) {
-            classDefinitionBuilder.field(parseField(property));
+            classDefinitionBuilder.field(parseField(property, homePath));
         }
         System.out.println(properties);
     }
 
-    private FieldDefinition parseField(String field) throws IOException {
+    private FieldDefinition parseField(String field, String homePath) throws IOException {
         val tokenizer = new StreamTokenizer(new StringReader(field));
         val builder = FieldDefinition.builder();
         tokenizer.nextToken();
@@ -41,18 +44,20 @@ public class PropertiesYamlParser implements PropertyParser {
             }
             tokenizer.nextToken();
             val propertyValue = tokenizer.sval;
-            parseTypeProperty(builder, propertyName, propertyValue);
+            parseTypeProperty(builder, propertyName, propertyValue, homePath);
             tokenizer.nextToken();
         }
         return builder.build();
     }
 
-    private void parseTypeProperty(FieldDefinition.FieldDefinitionBuilder builder, String propertyName, String propertyValue) {
+    private void parseTypeProperty(FieldDefinition.FieldDefinitionBuilder builder, String propertyName, String propertyValue, String homePath) throws IOException {
         if (propertyName.equals("type")) {
            builder.type(FieldType.valueOf(propertyValue.toUpperCase()));
         }
         if (propertyName.equals("ref")) {
-            builder.refName(propertyValue);
+            val yamlParser = ParserFactory.getParser(FileFormat.YAML);
+            val parsedObject = yamlParser.parseFile(homePath + propertyValue);
+            builder.refClass(parsedObject);
         }
     }
 

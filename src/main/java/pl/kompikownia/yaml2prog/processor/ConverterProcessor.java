@@ -3,6 +3,8 @@ package pl.kompikownia.yaml2prog.processor;
 import lombok.SneakyThrows;
 import lombok.val;
 import pl.kompikownia.yaml2prog.definition.ClassDefinition;
+import pl.kompikownia.yaml2prog.definition.FieldDefinition;
+import pl.kompikownia.yaml2prog.definition.FieldType;
 import pl.kompikownia.yaml2prog.exception.FileParseException;
 import pl.kompikownia.yaml2prog.factory.CodeGeneratorFactory;
 import pl.kompikownia.yaml2prog.factory.ParserFactory;
@@ -43,11 +45,21 @@ public class ConverterProcessor {
         List<ClassDefinition> parsedFileList = new ArrayList<>();
         ClassDefinition parsedFile = parser.parseFile(filename);
         parsedFileList.add(parsedFile);
+        parsedFileList.addAll(getObjectFields(parsedFile));
         while (parsedFile.getParentClass() != null) {
             parsedFile = parsedFile.getParentClass();
             parsedFileList.add(parsedFile);
+            parsedFileList.addAll(getObjectFields(parsedFile));
         }
         return parsedFileList.stream().distinct().collect(Collectors.toList());
+    }
+
+    private List<ClassDefinition> getObjectFields(ClassDefinition classDefinition) {
+        return classDefinition.getFields().stream()
+                .filter(fieldDefinition -> fieldDefinition.getType().equals(FieldType.OBJECT))
+                .map(FieldDefinition::getRefClass)
+                .distinct()
+                .collect(Collectors.toList());
     }
 
     private void saveFile(ClassDefinition classDefinition, CodeGenerator codeGenerator, String path) throws IOException {

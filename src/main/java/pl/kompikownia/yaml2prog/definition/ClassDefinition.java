@@ -1,15 +1,13 @@
 package pl.kompikownia.yaml2prog.definition;
 
-import lombok.Builder;
-import lombok.EqualsAndHashCode;
-import lombok.Getter;
-import lombok.Singular;
+import lombok.*;
 
 import java.util.List;
 
 @Getter
 @Builder
 @EqualsAndHashCode
+@ToString
 public class ClassDefinition {
     private String name;
     private String path;
