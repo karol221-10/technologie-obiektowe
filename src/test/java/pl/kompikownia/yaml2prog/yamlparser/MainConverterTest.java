@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.sql.SQLOutput;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -38,9 +39,21 @@ public class MainConverterTest {
         String[] args = List.of("--file","src/test/resources/Student.yaml", "--packageName","pl.kompikownia.yaml2prog.test.dtos")
                 .toArray(String[]::new);
         MainConverter.main(args);
-        File studentFile = new File("target/pl/kompikownia/yaml2prog/test/dtos/Student.java");
-        File personFile = new File("target/pl/kompikownia/yaml2prog/test/dtos/Person.java");
+        File studentFile = new File("target/src/main/java/pl/kompikownia/yaml2prog/test/dtos/Student.java");
+        File personFile = new File("target/src/main/java/pl/kompikownia/yaml2prog/test/dtos/Person.java");
         assertThat(personFile.exists()).isEqualTo(true);
         assertThat(studentFile.exists()).isEqualTo(true);
+    }
+
+    @Test
+    public void shouldCorrectlyConvertAndCreateFileWithProject() throws IOException {
+        //given
+        String[] args = List.of("--file","src/test/resources/Person.yaml", "--packageName","pl.kompikownia.yaml2prog.test.dtos",
+                "--projectType","maven","--projectGroupId","pl.kompikownia.yaml2prog","--projectArtifactId","yaml2progdtos",
+                "--projectVersion","1.0.0-SNAPSHOT")
+                .toArray(String[]::new);
+        MainConverter.main(args);
+        File mavenFile = new File("target/pom.xml");
+        assertThat(mavenFile.exists()).isEqualTo(true);
     }
 }

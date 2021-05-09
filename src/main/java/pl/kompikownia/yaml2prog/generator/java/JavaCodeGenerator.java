@@ -125,7 +125,7 @@ public class JavaCodeGenerator implements CodeGenerator {
                                                            List<FieldDefinition> parentClassFieldDefinitions,
                                                            List<FieldDefinition> currentClassFieldDefinitions) {
         appendIndent(4, str);
-        str.append("@Builder\r\n");
+        str.append("@Builder(builderMethodName=\"").append(className.toLowerCase()).append("Builder\")\r\n");
         appendIndent(4, str);
         str.append("protected ").append(className).append("(");
         parentClassFieldDefinitions.forEach(fieldDefinition -> {

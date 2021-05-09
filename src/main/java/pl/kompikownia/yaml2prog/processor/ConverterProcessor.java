@@ -69,7 +69,7 @@ public class ConverterProcessor {
 
     private String generateDirectoryStructure(String packageName) throws IOException {
         val folders = packageName.replace(".", "\\");
-        val endPath = Paths.get("target\\"+folders);
+        val endPath = Paths.get("target\\src\\main\\java\\"+folders);
         Files.createDirectories(endPath);
         return endPath.toString();
     }
