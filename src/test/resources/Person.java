@@ -10,5 +10,5 @@ import lombok.Builder;
 public class Person {
     private String name;
     private String surname;
-    private Integer age;
+    private Double age;
 }

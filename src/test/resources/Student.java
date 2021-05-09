@@ -9,11 +9,11 @@ import lombok.Builder;
 @Setter
 public class Student extends Person {
     @Builder
-    protected Student(String name,String surname,Integer age,String studentIdNumber,Integer yearOfStudy) {
+    protected Student(String name,String surname,Double age,String studentIdNumber,Double yearOfStudy) {
         super(name,surname,age);
         this.studentIdNumber = studentIdNumber;
         this.yearOfStudy = yearOfStudy;
     }
     private String studentIdNumber;
-    private Integer yearOfStudy;
+    private Double yearOfStudy;
 }

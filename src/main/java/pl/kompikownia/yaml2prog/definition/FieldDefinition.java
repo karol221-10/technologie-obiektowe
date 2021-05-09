@@ -10,5 +10,6 @@ import lombok.*;
 public class FieldDefinition {
     private String fieldName;
     private FieldType type;
+    private boolean isArray;
     private ClassDefinition refClass;
 }

@@ -9,9 +9,11 @@ import pl.kompikownia.yaml2prog.factory.ParserFactory;
 import pl.kompikownia.yaml2prog.lang.FileFormat;
 import pl.kompikownia.yaml2prog.parser.StringUtils;
 
+import java.io.File;
 import java.io.IOException;
 import java.io.StreamTokenizer;
 import java.io.StringReader;
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -37,28 +39,55 @@ public class PropertiesYamlParser implements PropertyParser {
         }
         tokenizer.nextToken();
         while(tokenizer.ttype != StreamTokenizer.TT_EOF) {
-            val propertyName = tokenizer.sval;
-            tokenizer.nextToken();
-            if(tokenizer.ttype != ':') {
-                throw new FileParseException();
-            }
-            tokenizer.nextToken();
-            val propertyValue = tokenizer.sval;
-            parseTypeProperty(builder, propertyName, propertyValue, homePath);
-            tokenizer.nextToken();
+            parseProperties(tokenizer, builder, homePath);
         }
         return builder.build();
     }
 
-    private void parseTypeProperty(FieldDefinition.FieldDefinitionBuilder builder, String propertyName, String propertyValue, String homePath) throws IOException {
+    private void parseTypeProperty(FieldDefinition.FieldDefinitionBuilder builder, String propertyName, String propertyValue, String homePath, StreamTokenizer tokenizer) throws IOException {
         if (propertyName.equals("type")) {
-           builder.type(FieldType.valueOf(propertyValue.toUpperCase()));
+            if (propertyValue.equals("array")) {
+                parseArray(tokenizer, builder, homePath);
+                return;
+            }
+            builder.type(FieldType.valueOf(propertyValue.toUpperCase()));
         }
         if (propertyName.equals("ref")) {
             val yamlParser = ParserFactory.getParser(FileFormat.YAML);
             val parsedObject = yamlParser.parseFile(homePath + propertyValue);
             builder.refClass(parsedObject);
         }
+    }
+
+    private void parseArray(StreamTokenizer tokenizer, FieldDefinition.FieldDefinitionBuilder builder, String homePath) throws IOException {
+        builder.isArray(true);
+        tokenizer.nextToken();
+        if (!"items".equals(tokenizer.sval)) {
+           throw new FileParseException();
+        }
+        tokenizer.nextToken();
+        if(tokenizer.ttype != ':') {
+            throw new FileParseException();
+        }
+        tokenizer.nextToken();
+        while(tokenizer.ttype != StreamTokenizer.TT_EOF) {
+            if(tokenizer.ttype == 36) {
+                tokenizer.nextToken();
+            }
+            parseProperties(tokenizer, builder, homePath);
+        }
+    }
+
+    private void parseProperties(StreamTokenizer tokenizer, FieldDefinition.FieldDefinitionBuilder builder, String homePath) throws IOException {
+        val propertyName = tokenizer.sval;
+        tokenizer.nextToken();
+        if(tokenizer.ttype != ':') {
+            throw new FileParseException();
+        }
+        tokenizer.nextToken();
+        val propertyValue = tokenizer.sval;
+        parseTypeProperty(builder, propertyName, propertyValue, homePath, tokenizer);
+        tokenizer.nextToken();
     }
 
     private List<String> getObjectPropertiesWithDescription(List<String> lines) {

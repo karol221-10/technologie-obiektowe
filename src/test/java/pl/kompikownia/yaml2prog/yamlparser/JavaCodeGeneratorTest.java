@@ -28,6 +28,19 @@ public class JavaCodeGeneratorTest {
     }
 
     @Test
+    public void shouldGenerateCorrectJavaFileWithArray() throws IOException {
+        // given
+        val codeGenerator = new JavaCodeGenerator();
+        codeGenerator.setMainPackageName("pl.kompikownia.yaml2prog.dto");
+
+        // when
+        val result = codeGenerator.generateFile(buildObjectWithArrayModel());
+
+        // then
+        assertThat(result).isEqualTo(readFile("ObjectWithArray.java"));
+    }
+
+    @Test
     public void shouldGenerateCorrectJavaFileWithInheritance() throws IOException {
         // given
         val codeGenerator = new JavaCodeGenerator();
@@ -51,9 +64,20 @@ public class JavaCodeGeneratorTest {
     private ClassDefinition buildPersonClassDefinition() {
         return ClassDefinition.builder()
                 .name("Person")
-                .field(FieldDefinition.of("name", FieldType.STRING, null))
-                .field(FieldDefinition.of("surname", FieldType.STRING, null))
-                .field(FieldDefinition.of("age", FieldType.NUMBER, null))
+                .field(FieldDefinition.of("name", FieldType.STRING, false,null))
+                .field(FieldDefinition.of("surname", FieldType.STRING, false, null))
+                .field(FieldDefinition.of("age", FieldType.NUMBER, false,null))
+                .build();
+    }
+
+    private ClassDefinition buildObjectWithArrayModel() {
+        return ClassDefinition.builder()
+                .name("ObjectWithArray")
+                .field(FieldDefinition.of("integerArray", FieldType.INTEGER, true, null))
+                .field(FieldDefinition.of("objectArray", FieldType.OBJECT, true,
+                        ClassDefinition.builder()
+                            .name("TestObject")
+                            .build()))
                 .build();
     }
 
@@ -61,8 +85,8 @@ public class JavaCodeGeneratorTest {
         return ClassDefinition.builder()
                 .name("Student")
                 .parentClass(buildPersonClassDefinition())
-                .field(FieldDefinition.of("studentIdNumber", FieldType.STRING, null))
-                .field(FieldDefinition.of("yearOfStudy", FieldType.NUMBER, null))
+                .field(FieldDefinition.of("studentIdNumber", FieldType.STRING,false, null))
+                .field(FieldDefinition.of("yearOfStudy", FieldType.NUMBER, false, null))
                 .build();
     }
 }

@@ -74,9 +74,22 @@ public class JavaCodeGenerator implements CodeGenerator {
     }
 
     private String resolveType(FieldDefinition fieldDefinition) {
+        if(fieldDefinition.isArray()) {
+            return "List<"+resolveBasicType(fieldDefinition)+"> ";
+        }
+        else {
+            return resolveBasicType(fieldDefinition);
+        }
+    }
+
+    private String resolveBasicType(FieldDefinition fieldDefinition) {
         switch(fieldDefinition.getType()) {
-            case NUMBER:
+            case BOOLEAN:
+                return "Boolean";
+            case INTEGER:
                 return "Integer";
+            case NUMBER:
+                return "Double";
             case STRING:
                 return "String";
             case OBJECT:
@@ -94,6 +107,10 @@ public class JavaCodeGenerator implements CodeGenerator {
                 .forEach(refName -> {
                     str.append("import ").append(mainPackageName).append(".").append(refName).append(";\r\n");
                 });
+        if(fields.stream()
+                .anyMatch(FieldDefinition::isArray)) {
+            str.append("import java.util.List;\r\n");
+        }
         if(parentClass != null) {
             str.append("import ").append(mainPackageName).append(".").append(parentClass.getName()).append(";\r\n");
         }

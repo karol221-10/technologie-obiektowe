@@ -1,0 +1,11 @@
+name: Magazine
+properties:
+  numberArray:
+    type: array
+    items:
+      type: number
+  objectArray:
+    type: array
+    items:
+      type: object
+      $ref: Person.yaml
