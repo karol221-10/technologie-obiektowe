@@ -7,6 +7,7 @@ import pl.kompikownia.yaml2prog.definition.FieldDefinition;
 import pl.kompikownia.yaml2prog.definition.FieldType;
 import pl.kompikownia.yaml2prog.exception.FileParseException;
 import pl.kompikownia.yaml2prog.factory.CodeGeneratorFactory;
+import pl.kompikownia.yaml2prog.factory.DirectoryStructureGeneratorFactory;
 import pl.kompikownia.yaml2prog.factory.ParserFactory;
 import pl.kompikownia.yaml2prog.generator.CodeGenerator;
 import pl.kompikownia.yaml2prog.lang.FileFormat;
@@ -31,7 +32,7 @@ public class ConverterProcessor {
         val codeGenerator = CodeGeneratorFactory.getGenerator(destinationLang);
         codeGenerator.setMainPackageName(packageName);
         val parsedFiles = parseFileAndRelatedFiles(parser, filename);
-        val path = generateDirectoryStructure(packageName);
+        val path = DirectoryStructureGeneratorFactory.getGenerator(destinationLang).generateDirectoryStructure(packageName);
         parsedFiles.forEach(parsedFile -> {
             try {
                 saveFile(parsedFile, codeGenerator, path);
@@ -65,13 +66,6 @@ public class ConverterProcessor {
     private void saveFile(ClassDefinition classDefinition, CodeGenerator codeGenerator, String path) throws IOException {
         val fileContent = codeGenerator.generateFile(classDefinition);
         saveGeneratedFile(fileContent, classDefinition.getName() + codeGenerator.getFileExtension(), path);
-    }
-
-    private String generateDirectoryStructure(String packageName) throws IOException {
-        val folders = packageName.replace(".", "\\");
-        val endPath = Paths.get("target\\src\\main\\java\\"+folders);
-        Files.createDirectories(endPath);
-        return endPath.toString();
     }
 
     private void saveGeneratedFile(String fileContent, String generatedFileName, String generatedFilePath) throws IOException {
