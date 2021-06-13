@@ -22,6 +22,18 @@ public class CppCodeGeneratorTest {
         System.out.println(result);
     }
 
+    @Test
+    public void shouldGenerateCorrectCppFileWithGettersSetters() throws IOException {
+        // given
+        val codeGenerator = new CppCodeGenerator();
+        codeGenerator.setMainPackageName("pl.kompikownia.yaml2prog.dto");
+        codeGenerator.setGenerateGettersSetters(true);
+        // when
+        val result = codeGenerator.generateFile(buildPersonClassDefinition());
+        // then
+        System.out.println(result);
+    }
+
     private ClassDefinition buildPersonClassDefinition() {
         return ClassDefinition.builder()
                 .name("Person")

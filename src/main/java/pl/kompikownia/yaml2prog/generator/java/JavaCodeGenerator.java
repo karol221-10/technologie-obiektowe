@@ -8,9 +8,11 @@ import pl.kompikownia.yaml2prog.definition.FieldDefinition;
 import pl.kompikownia.yaml2prog.definition.FieldType;
 import pl.kompikownia.yaml2prog.exception.FileParseException;
 import pl.kompikownia.yaml2prog.generator.CodeGenerator;
+import pl.kompikownia.yaml2prog.parameter.ParameterNames;
 
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.Optional;
 
 public class JavaCodeGenerator implements CodeGenerator {
@@ -34,6 +36,10 @@ public class JavaCodeGenerator implements CodeGenerator {
         }
         generateClassMembers(stringBuilder, classDefinition);
         return stringBuilder.toString();
+    }
+
+    @Override
+    public void setParameters(Map<String, Object> parameters) {
     }
 
     @Override

@@ -4,6 +4,7 @@ import lombok.val;
 import pl.kompikownia.yaml2prog.generator.java.JavaProjectGenerator;
 import pl.kompikownia.yaml2prog.lang.FileFormat;
 import pl.kompikownia.yaml2prog.lang.SupportedLang;
+import pl.kompikownia.yaml2prog.parameter.ParameterNames;
 import pl.kompikownia.yaml2prog.processor.ConverterProcessor;
 
 import java.io.File;
@@ -17,13 +18,18 @@ import java.util.Optional;
 public class MainConverter {
 
     public static void main(String[] args) {
+        Map<String, Object> parameters = new HashMap<>();
         val fileToConvert = resolveParam("--file",args);
         val destinationLang = resolveParamOrDefault("--destinationLanguage", "JAVA", args);
         val packageName = resolveParam("--packageName", args);
         val sourceFileFormat = getExtensionByStringHandling(fileToConvert).orElseThrow();
         val converterProcessor = new ConverterProcessor();
         val projectType = resolveParamOptional("--projectType", args);
-        converterProcessor.convert(fileToConvert, packageName, SupportedLang.valueOf(destinationLang.toUpperCase()), FileFormat.valueOf(sourceFileFormat.toUpperCase()));
+        val generateGetters = resolveParamOptional("--generateGettersSetters", args);
+        if (generateGetters.isPresent()) {
+            parameters.put(ParameterNames.GENERATE_GETTERS_SETTERS, true);
+        }
+        converterProcessor.convert(fileToConvert, packageName, SupportedLang.valueOf(destinationLang.toUpperCase()), FileFormat.valueOf(sourceFileFormat.toUpperCase()), parameters);
         if(projectType.isPresent() && "maven".equals(projectType.get())) {
             generateMavenProject(args);
         }
