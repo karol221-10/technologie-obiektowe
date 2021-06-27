@@ -30,7 +30,7 @@ public class MainConverterTest {
         String[] args = List.of("--file","src/test/resources/Person.yaml", "--packageName","pl.kompikownia.yaml2prog.test.dtos")
                 .toArray(String[]::new);
         MainConverter.main(args);
-        File tmpDir = new File("target/pl/kompikownia/yaml2prog/test/dtos/Person.java");
+        File tmpDir = new File("target/src/main/java/pl/kompikownia/yaml2prog/test/dtos/Person.java");
         assertThat(tmpDir.exists()).isEqualTo(true);
     }
 

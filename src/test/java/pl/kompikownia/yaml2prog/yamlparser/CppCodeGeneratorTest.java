@@ -14,6 +14,7 @@ public class CppCodeGeneratorTest {
     @Test
     public void shouldGenerateCorrectCppFile() throws IOException {
         // given
+        System.out.println(50 + 30 + "test");
         val codeGenerator = new CppCodeGenerator();
         codeGenerator.setMainPackageName("pl.kompikownia.yaml2prog.dto");
         // when

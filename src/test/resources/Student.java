@@ -8,7 +8,7 @@ import lombok.Builder;
 @Getter
 @Setter
 public class Student extends Person {
-    @Builder
+    @Builder(builderMethodName="studentBuilder")
     protected Student(String name,String surname,Double age,String studentIdNumber,Double yearOfStudy) {
         super(name,surname,age);
         this.studentIdNumber = studentIdNumber;
